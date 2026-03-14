@@ -1,0 +1,23 @@
+// firestore.rules
+// ─────────────────────────────────────────────────────────────
+// These rules control who can read/write your database.
+// Deploy with: firebase deploy --only firestore:rules
+//
+// CURRENT SETTING: Only logged-in users can access data.
+// ─────────────────────────────────────────────────────────────
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: is the user logged in?
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // All collections: require login to read or write
+    match /{collection}/{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}
